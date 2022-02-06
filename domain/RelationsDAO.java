@@ -13,7 +13,7 @@ public class RelationsDAO implements DAOInterface<Relations> {
 	private Connection connection;
 
 	public RelationsDAO() throws SQLException {
-		String url = "jdbc:postgresql://localhost/mini-social?user=postgres&password=069131467dasa";
+		String url = "jdbc:postgresql://localhost/mini-social?user=postgres&password=qazwsx";
 		connection = DriverManager.getConnection(url);
 
 	}
