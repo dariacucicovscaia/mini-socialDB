@@ -16,7 +16,7 @@ public class UserDAO implements DAOInterface<User> {
 	private Connection connection;
 
 	public UserDAO() throws SQLException {
-		String url = "jdbc:postgresql://localhost/mini-social?user=postgres&password=069131467dasa";
+		String url = "jdbc:postgresql://localhost/mini-social?user=postgres&password=qazwsx";
 		connection = DriverManager.getConnection(url);
 
 	}
