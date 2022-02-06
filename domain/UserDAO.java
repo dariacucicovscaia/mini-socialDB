@@ -11,32 +11,70 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-public class UserDAO {
+public class UserDAO implements DAOInterface<User> {
 	private List<User> users;
-	private ResultSet result;
-	private User u = new User();
+	private Connection connection;
 
-
-	public UserDAO(String URL, String SQL) throws SQLException {
-		Connection conn = DriverManager.getConnection(URL);
-		Statement stmt = conn.createStatement();
-		result = stmt.executeQuery(SQL);
+	public UserDAO() throws SQLException {
+		String url = "jdbc:postgresql://localhost/mini-social?user=postgres&password=069131467dasa";
+		connection = DriverManager.getConnection(url);
 
 	}
 
-	public List<User> getUsers() throws SQLException {
+	@Override
+	public List<User> getAll() throws SQLException {
 		users = new ArrayList<User>();
-
+		String sql = "SELECT id, nickname, email, password FROM public.users;";
+		Statement stmt = connection.createStatement();
+		ResultSet result = stmt.executeQuery(sql);
 		while (result.next()) {
-			u.setId(result.getInt("id"));
-			u.setNickname(result.getString("nickname"));
-			u.setEmail(result.getString("email"));
-			u.setPassword(result.getString("password"));
 
-			users.add(new User(u.getId(), u.getNickname(), u.getEmail(), u.getPassword()));
+			users.add(new User(result.getInt("id"), result.getString("nickname"), result.getString("email"),
+					result.getString("password")));
+		}
+		return users;
+	}
+
+	@Override
+	public void put(User entity) throws SQLException {
+		// which should insert the NEW! user's data into the DB
+		String insert = "INSERT INTO public.users(\r\n" + "	id, nickname, email, password)\r\n" + "	VALUES ("
+				+ entity.getId() + ", '" + entity.getNickname() + "', '" + entity.getEmail() + "', '"
+				+ entity.getPassword() + "');";
+
+		Statement stmt = connection.createStatement();
+		stmt.executeUpdate(insert);
+
+	}
+
+	@Override
+	public User get(int id) throws SQLException {
+		String sql = "SELECT id, nickname, email, password\r\n 	FROM public.users\r\n	WHERE id=" + id + ";";
+		Statement stmt = connection.createStatement();
+		ResultSet result = stmt.executeQuery(sql);
+		User user = null;
+		if (result.next()) {
+			user = new User(result.getInt(1), result.getString(2), result.getString(3), result.getString(4));
 		}
 
-		return users;
+		return user;
+	}
+
+	@Override
+	public void update(User entity) throws SQLException {
+		String sql = "UPDATE public.users\r\n" + "	SET nickname='" + entity.getNickname() + "', email='"
+				+ entity.getEmail() + "', password='" + entity.getPassword() + "'\r\n" + "	WHERE id = "
+				+ entity.getId() + ";";
+		Statement stmt = connection.createStatement();
+		stmt.executeUpdate(sql);
+
+	}
+
+	@Override
+	public void remove(int id) throws SQLException {
+		String sql = "DELETE FROM public.users\r\n 	WHERE id= " + id + ";";
+		Statement stmt = connection.createStatement();
+		stmt.executeUpdate(sql);
 
 	}
 
