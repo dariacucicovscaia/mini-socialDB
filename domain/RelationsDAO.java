@@ -8,21 +8,19 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RelationsDAO implements DAOInterface<Relations> {
+public class RelationsDAO extends DAOAbstract<Relations> implements DAOInterface<Relations>{
 	private List<Relations> relations;
-	private Connection connection;
+	
 
 	public RelationsDAO() throws SQLException {
-		String url = "jdbc:postgresql://localhost/mini-social?user=postgres&password=qazwsx";
-		connection = DriverManager.getConnection(url);
-
+		super("relations");
 	}
 
 	@Override
 	public List<Relations> getAll() throws SQLException {
 		relations = new ArrayList<Relations>();
 		String sql = "SELECT from_user_id, to_user_id, type_id, status_id\r\n" + "	FROM public.relations;";
-		Statement stmt = connection.createStatement();
+		Statement stmt = getConnection().createStatement();
 		ResultSet result = stmt.executeQuery(sql);
 		while (result.next()) {
 
@@ -37,7 +35,7 @@ public class RelationsDAO implements DAOInterface<Relations> {
 				+ "	VALUES (" + entity.getFrom_user_id() + "," + entity.getTo_user_id() + ", " + entity.getType_id()
 				+ "," + entity.getStatus_id() + ");";
 
-		Statement stmt = connection.createStatement();
+		Statement stmt = getConnection().createStatement();
 		stmt.executeUpdate(sql);
 	}
 
@@ -47,7 +45,7 @@ public class RelationsDAO implements DAOInterface<Relations> {
 		String sql = "SELECT from_user_id, to_user_id, type_id, status_id\r\n"
 				+ "	FROM public.relations\r\n WHERE from_user_id=" + id + ";";
 
-		Statement stmt = connection.createStatement();
+		Statement stmt = getConnection().createStatement();
 		ResultSet result = stmt.executeQuery(sql);
 		Relations relations = null;
 		if (result.next()) {
@@ -63,7 +61,7 @@ public class RelationsDAO implements DAOInterface<Relations> {
 				+ entity.getStatus_id() + "\r\n" + "	WHERE from_user_id=" + entity.getFrom_user_id()
 				+ " AND to_user_id=" + entity.getTo_user_id() + " ;";
 		
-		Statement stmt = connection.createStatement();
+		Statement stmt = getConnection().createStatement();
 		stmt.executeUpdate(sql);
 
 	}
@@ -72,7 +70,7 @@ public class RelationsDAO implements DAOInterface<Relations> {
 	public void remove(int id) throws SQLException {
 		String sql = "DELETE FROM public.relations\r\n 	WHERE from_user_id=" + id + " ;";
 		
-		Statement stmt = connection.createStatement();
+		Statement stmt = getConnection().createStatement();
 		stmt.executeUpdate(sql);
 	}
 

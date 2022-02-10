@@ -19,21 +19,21 @@ public class CLIApp {
 		}
 		System.out.println();
 
-		System.out.println(relationsList.get(1).getStatus_id());
+		System.out.println(relationsList.get(3).getStatus_id());
 		//relationsList.put(new Relations(3, 2, 1, 1));
 		//relationsList.update(new Relations(3, 2, 1, 2));
 		//relationsList.remove(1);
 
 /////////////////////////////////////////////////////////////////////////////////
-//		for (User userlist : userList.getAll()) {
-//			System.out.println(userlist.getNickname() + " " + userlist.getEmail());
-//		}
-//		System.out.println();
-//		
-		// System.out.println(userList.get(1).getNickname());
-		// userList.put(new User(2, "user2", "user2@example.com", "123"));
-		// userList.update(new User(2, "user2", "user2@example.com", "546"));
-		// userList.remove(2);
+		for (User userlist : userList.getAll()) {
+			System.out.println(userlist.getNickname() + " " + userlist.getEmail());
+		}
+		System.out.println();
+		
+		 System.out.println(userList.get(1).getNickname());
+//		 userList.put(new User(2, "user2", "user2@example.com", "123"));
+//		 userList.update(new User(2, "user2", "user2@example.com", "546"));
+//		 userList.remove(2);
 
 	}
 

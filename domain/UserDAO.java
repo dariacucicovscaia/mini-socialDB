@@ -1,31 +1,24 @@
 package domain;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
-public class UserDAO implements DAOInterface<User> {
+public class UserDAO extends DAOAbstract<User> implements DAOInterface<User> {
 	private List<User> users;
-	private Connection connection;
 
 	public UserDAO() throws SQLException {
-		String url = "jdbc:postgresql://localhost/mini-social?user=postgres&password=qazwsx";
-		connection = DriverManager.getConnection(url);
-
+		
+		super("users");
 	}
 
 	@Override
 	public List<User> getAll() throws SQLException {
 		users = new ArrayList<User>();
 		String sql = "SELECT id, nickname, email, password FROM public.users;";
-		Statement stmt = connection.createStatement();
+		Statement stmt = getConnection().createStatement();
 		ResultSet result = stmt.executeQuery(sql);
 		while (result.next()) {
 
@@ -42,7 +35,7 @@ public class UserDAO implements DAOInterface<User> {
 				+ entity.getId() + ", '" + entity.getNickname() + "', '" + entity.getEmail() + "', '"
 				+ entity.getPassword() + "');";
 
-		Statement stmt = connection.createStatement();
+		Statement stmt =  getConnection().createStatement();
 		stmt.executeUpdate(insert);
 
 	}
@@ -50,7 +43,7 @@ public class UserDAO implements DAOInterface<User> {
 	@Override
 	public User get(int id) throws SQLException {
 		String sql = "SELECT id, nickname, email, password\r\n 	FROM public.users\r\n	WHERE id=" + id + ";";
-		Statement stmt = connection.createStatement();
+		Statement stmt =  getConnection().createStatement();
 		ResultSet result = stmt.executeQuery(sql);
 		User user = null;
 		if (result.next()) {
@@ -65,7 +58,7 @@ public class UserDAO implements DAOInterface<User> {
 		String sql = "UPDATE public.users\r\n" + "	SET nickname='" + entity.getNickname() + "', email='"
 				+ entity.getEmail() + "', password='" + entity.getPassword() + "'\r\n" + "	WHERE id = "
 				+ entity.getId() + ";";
-		Statement stmt = connection.createStatement();
+		Statement stmt =  getConnection().createStatement();
 		stmt.executeUpdate(sql);
 
 	}
@@ -73,7 +66,7 @@ public class UserDAO implements DAOInterface<User> {
 	@Override
 	public void remove(int id) throws SQLException {
 		String sql = "DELETE FROM public.users\r\n 	WHERE id= " + id + ";";
-		Statement stmt = connection.createStatement();
+		Statement stmt =  getConnection().createStatement();
 		stmt.executeUpdate(sql);
 
 	}
