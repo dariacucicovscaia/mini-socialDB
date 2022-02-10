@@ -8,7 +8,7 @@ public abstract class DAOAbstract<T> {
 	private Connection connection;
 
 	public DAOAbstract(String string) throws SQLException {
-		String url = "jdbc:postgresql://localhost/mini-social?user=postgres&password=069131467dasa";
+		String url = "jdbc:postgresql://localhost/mini-social?user=postgres&password=qazwsx";
 		setConnection(DriverManager.getConnection(url));
 	}
 
