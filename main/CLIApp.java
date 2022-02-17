@@ -14,12 +14,13 @@ public class CLIApp {
 	public static void main(String[] args) throws SQLException, NoIdFieldException {
 		
 		
-		    new RelationDAO();
+		    RelationDAO dao = new RelationDAO();
 		    UserDAO userList = new UserDAO();
 			//userList.remove(4);
 		    	//userList.put(new User(7, "user7", "user7@example.com", "123"));
 		    userList.update(new User(7, "user7", "user7@example.com", "1457"));
-		
+		  //  dao.put(new Relation(1,1,1,2));
+		    dao.update(new Relation(1,1,1,1));
 		
 		
 		

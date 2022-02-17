@@ -2,10 +2,10 @@ package domain;
 
 public class Relation {
 	@Id
-	private int from_user_id;
-	private int to_user_id;
-	private int type_id;
-	private int status_id;
+	public int from_user_id;
+	public int to_user_id;
+	public int type_id;
+	public int status_id;
 
 	public Relation() {
 

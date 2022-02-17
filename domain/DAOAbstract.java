@@ -120,15 +120,18 @@ public abstract class DAOAbstract<T> implements DAOInterface<T> {
 				} else if (field.getType().getName().equals("java.lang.String")) {
 					set += field.getName() + "="+"'" + value + "',";
 				}
+				
+			
 			} catch (IllegalArgumentException | IllegalAccessException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		}
-		set = set.substring(0, set.length() - 1);
+		}	set = set.substring(0, set.length() - 1);
+		
+		set = set.replaceAll(from_user_id, "");
 		
 		 StringBuffer originalString =new StringBuffer(set);
-		 originalString.replace(4, 9, " ");
+		 originalString.replace(4, 7, " ");
 		try {
 			
 			Object id = fields[0].get(entity);
