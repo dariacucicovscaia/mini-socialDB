@@ -2,10 +2,11 @@ package domain;
 
 
 public class User{
-	private int id;
-	private String nickname;
-	private String email;
-	private String password;
+	@Id
+	public int id;
+	public String nickname;
+	public String email;
+	public String password;
 
 	public User() {
 
