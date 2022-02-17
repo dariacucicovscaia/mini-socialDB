@@ -11,6 +11,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import exception.Id;
 import exception.NoIdFieldException;
 
 public abstract class DAOAbstract<T> implements DAOInterface<T> {
@@ -32,13 +33,11 @@ public abstract class DAOAbstract<T> implements DAOInterface<T> {
 		ParameterizedType t = (ParameterizedType) this.getClass().getGenericSuperclass();
 		entityClazz = (Class) t.getActualTypeArguments()[0];
 
-		// HW:
 		if (entityClazz.getDeclaredFields()[0].isAnnotationPresent(Id.class)) {
 			from_user_id = entityClazz.getDeclaredFields()[0].getName();
 		} else {
 			throw new NoIdFieldException();
 		}
-
 		// 2. Initiate connection
 		connection = DriverManager.getConnection(url);
 	}

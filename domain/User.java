@@ -1,5 +1,6 @@
 package domain;
 
+import exception.Id;
 
 public class User{
 	@Id

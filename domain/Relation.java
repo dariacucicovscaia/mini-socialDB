@@ -1,5 +1,7 @@
 package domain;
 
+import exception.Id;
+
 public class Relation {
 	@Id
 	public int from_user_id;
