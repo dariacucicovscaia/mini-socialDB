@@ -1,6 +1,8 @@
 package domain;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.sql.Connection;
@@ -44,16 +46,46 @@ public abstract class DAOAbstract<T> implements DAOInterface<T> {
 
 	@Override
 	public List<T> getAll() throws SQLException {
-		List<T> t = new ArrayList<T>();
-//		String sql = "SELECT id, nickname, email, password FROM public." + string + ";";
-//		Statement stmt = getConnection().createStatement();
-//		ResultSet result = stmt.executeQuery(sql);
-//		while (result.next()) {
-//
-//			t.add(new User(result.getInt("id"), result.getString("nickname"), result.getString("email"),
-//					result.getString("password")));
-//		}
-		return t;
+		Field fields[] = entityClazz.getDeclaredFields();
+		String columns = " ";
+		for (Field field : fields) {
+			columns += field.getName() + ",";
+		}
+		columns = columns.substring(0, columns.length() - 1);
+		columns += " ";
+		String sql = "SELECT" + columns + " FROM public." + getTableName() + ";";
+		Statement stmt = getConnection().createStatement();
+		ResultSet result = stmt.executeQuery(sql);
+		List<T> entity = new ArrayList<T>();
+		T t = null;
+		while (result.next()) {
+			try {
+				Constructor constr = entityClazz.getConstructor();
+				t = (T) constr.newInstance();
+				for (Field field : fields) {
+					String fieldName = field.getName();
+					Object fieldValue = result.getObject(fieldName);
+					field.set(t, fieldValue);
+				}
+			} catch (NoSuchMethodException | SecurityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InstantiationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			entity.add(t);
+		}
+		return entity;
 	}
 
 	@Override
@@ -92,53 +124,90 @@ public abstract class DAOAbstract<T> implements DAOInterface<T> {
 
 	}
 
-	public T get(int id, String from_user_id) throws SQLException {
-		List<T> t = new ArrayList<T>();
-//		String sql = "SELECT *\r\n 	FROM public." + string + "\r\n	WHERE " + from_user_id + "=" + id + ";";
-//		Statement stmt = getConnection().createStatement();
-//		ResultSet result = stmt.executeQuery(sql);
-//		
-//		if (result.next()) {
-//			user = new User(result.getInt(1), result.getString(2), result.getString(3), result.getString(4));
-//		}
-//
-		return (T) t;
+	@Override
+	public T get(int id) throws SQLException {
+		Field fields[] = entityClazz.getDeclaredFields();
+
+		String columns = " ";
+		for (Field field : fields) {
+			columns += field.getName() + ",";
+		}
+		columns = columns.substring(0, columns.length() - 1);
+		columns += " ";
+
+		String sql = "SELECT " + columns + "\r\n 	FROM public." + getTableName() + "\r\n	WHERE " + from_user_id + "="
+				+ id + ";";
+
+		T entity = null;
+		Statement stmt = getConnection().createStatement();
+		ResultSet result = stmt.executeQuery(sql);
+
+		if (result.next()) {
+			try {
+				Constructor constr = entityClazz.getConstructor();
+				entity = (T) constr.newInstance();
+				for (Field field : fields) {
+					String fieldName = field.getName();
+					Object fieldValue = result.getObject(fieldName);
+					field.set(entity, fieldValue);
+				}
+
+			} catch (NoSuchMethodException | SecurityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InstantiationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+
+		return entity;
 	}
 
 	@Override
 	public void update(T entity) throws SQLException {
 		Field fields[] = entityClazz.getDeclaredFields();
-		
+
 		String set = "SET ";
 		for (Field field : fields) {
 
 			try {
 				Object value = field.get(entity);
 				if (field.getType().getName().equals("int")) {
-					set +=field.getName() + "="+ value + ",";
+					set += field.getName() + "=" + value + ",";
 				} else if (field.getType().getName().equals("java.lang.String")) {
-					set += field.getName() + "="+"'" + value + "',";
+					set += field.getName() + "=" + "'" + value + "',";
 				}
-				
-			
+
 			} catch (IllegalArgumentException | IllegalAccessException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		}	set = set.substring(0, set.length() - 1);
-		
+		}
+		set = set.substring(0, set.length() - 1);
+
 		set = set.replaceAll(from_user_id, "");
-		
-		 StringBuffer originalString =new StringBuffer(set);
-		 originalString.replace(4, 7, " ");
+
+		StringBuffer originalString = new StringBuffer(set);
+		originalString.replace(4, 7, " ");
 		try {
-			
+
 			Object id = fields[0].get(entity);
-			String sql = "UPDATE public." + getTableName() + "\r\n" +originalString+ "\r\n" + "	WHERE " + from_user_id + "=" + id + " ;";
-		    Statement stmt = getConnection().createStatement();
-	      	stmt.executeUpdate(sql);
-	      
-	      	
+			String sql = "UPDATE public." + getTableName() + "\r\n" + originalString + "\r\n" + "	WHERE "
+					+ from_user_id + "=" + id + " ;";
+			Statement stmt = getConnection().createStatement();
+			stmt.executeUpdate(sql);
+
 		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

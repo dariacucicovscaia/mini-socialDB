@@ -12,17 +12,8 @@ public class UserDAO extends DAOAbstract<User> {
 		super();
 	}
 
-	@Override
-	public List<User> getAll() throws SQLException {
-		return users;
+	
 
-	}
-
-	@Override
-	public User get(int id) throws SQLException {
-		return null;
-
-	}
 
 
 
